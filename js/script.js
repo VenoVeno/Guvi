@@ -10,7 +10,7 @@ $(document).ready(function()
     var mob = $(Unum).val();
 
     console.log(name,email,pass1);
-
+    
     $.getJSON('/Guvi/php/Users.json',
         function(data)
         {
@@ -76,7 +76,6 @@ $(document).ready(function()
             {
                 $.each(data,function(index,details)
                 {
-
                     if(data[index].name == email_name || data[index].email == email_name )
                     { 
                         if(data[index].Opwd == password)
