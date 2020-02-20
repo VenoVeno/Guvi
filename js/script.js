@@ -62,97 +62,73 @@ $(document).ready(function()
         var email_name = $(Uname_email).val();
         var password = $(Upwd).val();
         var safename;
-        
-        var jflag = 0;
+        var jflag = 0 , dflag = 0;
 
         console.log(email_name,password);
         e.preventDefault(); 
 
         $('#loginerror').html(" ");
 
-        $.getJSON('/Guvi/php/Users.json',function(data)
-        {
-            try
-            {
-                $.each(data,function(index,details)
-                {
-                    if(data[index].name == email_name || data[index].email == email_name )
-                    { 
-                        if(data[index].Opwd == password)
-                        {
-                        safename = data[index].name;
-                        console.log("Success",jflag);
-                        jflag = 1;
-                        }
-                    }
-                }); 
-                e.preventDefault(); 
+        console.log("Success outside",jflag);
 
-                if(jflag == 1)
+            console.log("Success before JSON");
+            $.getJSON('/Guvi/php/Users.json',
+            function(data)
+            {
+                console.log("Success inside JSON",jflag);
+                try
                 {
-                    if(typeof(Storage) !== undefined)
+                    $.each(data,function(index,details)
                     {
+                        if(data[index].name == email_name || data[index].email == email_name )
+                        { 
+                            if(data[index].Opwd == password)
+                            {
+                            safename = data[index].name;
+                            console.log("Success before Flag",jflag);
+                            jflag = 1;
+                            console.log("Success after Flag",jflag);                        
+                            }
+                        }
+                    }); 
+                    e.preventDefault();
+                }
+                catch (err){
+                    console.log("Error in JSON" + err);
+                }            
+            });
+        
+            console.log("Success after JSON",jflag);  
+
+            console.log("Success before Ajax",jflag);
+
+            $.ajax({
+                url: 'php/login.php',
+                type : 'POST',
+                data :
+                {
+                    Uemail_name : email_name, 
+                    Upwd : password
+                },
+                success: function(data) 
+                {
+                    console.log(data);
+                    dflag = 1;
+                    console.log(dflag,jflag);
+                    if(jflag == 1 && dflag == 1)
+                    {
+                        if(typeof(Storage) !== undefined)
+                        {
                         sessionStorage.setItem("username",safename);
                         window.location.href = "/Guvi/Profile.html";
+                        }
                     }
-                }                   
-                else if(jflag == 0)
-                    $('#loginerror').html("Invalid Username/Password");               
-            }
-            catch (err){
-                console.log("Error" + err);
-            }            
-        });
-    });
-});
-
-function checkSession()
-{
-    if(typeof(Storage) !== undefined)
-    {
-        if(sessionStorage.getItem("username"))
-        {
-            alert("Taking You to The Profile");
-            window.location = "Profile.html";
-        }
-    }
-}
-
-function validateSession()
-{
-    if(typeof(Storage) !== undefined)
-    {
-        if(!sessionStorage.getItem("username"))
-        {
-            alert("Your Session has been expired! Try Login Again!");
-            window.location = "login.html";
-        }
-    }
-}
-
-function display()
-{
-    if(typeof(Storage) !== undefined)
-    {
-        var name = sessionStorage.getItem("username");
-        if(name)
-        {
-            $.ajax({
-                url: '/Guvi/php/profile.php',
-                type : 'POST',
-                data : {Uname : name},
-                success: function(row) {
-                    $('#dynBody').html(row);
+                    else if(jflag == 0 || dflag == 0)
+                        $('#loginerror').html("Invalid Username/Password");
                 }
             });
-        }
-        else
-        {
-            alert("Your Session has been expired! Try Login Again!");
-            window.location = "login.html";
-        }
-    }
-}
+    });
+});
 
 $(document).ready(function()
 {
@@ -232,6 +208,54 @@ $(document).ready(function()
     });
 }); 
 
+function checkSession()
+{
+    if(typeof(Storage) !== undefined)
+    {
+        if(sessionStorage.getItem("username"))
+        {
+            alert("Taking You to The Profile");
+            window.location = "Profile.html";
+        }
+    }
+}
+
+function validateSession()
+{
+    if(typeof(Storage) !== undefined)
+    {
+        if(!sessionStorage.getItem("username"))
+        {
+            alert("Your Session has been expired! Try Login Again!");
+            window.location = "login.html";
+        }
+    }
+}
+
+function display()
+{
+    if(typeof(Storage) !== undefined)
+    {
+        var name = sessionStorage.getItem("username");
+        if(name)
+        {
+            $.ajax({
+                url: '/Guvi/php/profile.php',
+                type : 'POST',
+                data : {Uname : name},
+                success: function(row) {
+                    $('#dynBody').html(row);
+                }
+            });
+        }
+        else
+        {
+            alert("Your Session has been expired! Try Login Again!");
+            window.location = "login.html";
+        }
+    }
+}
+
 function logoutUser()
 {
     sessionStorage.removeItem('username');
@@ -247,96 +271,3 @@ function calculateage(dob)
     var age = Math.floor(diff/31536000000);
     return age;
 }
-
-$(document).ready(function()
-{
-    $("#pwdForm").submit(function(e)
-    {
-        var flag = 0 , errflag = 0;
-        var pwd1 = $(Upwd1).val();
-        var pwd2 = $(Upwd2).val();
-        var pwd3 = $(Upwd3).val();
-        
-        console.log(pwd1,pwd2,pwd3);
-
-        $('#loginerror').html(" ");
-        e.preventDefault();
-        
-        try
-        {
-            if(typeof(Storage) !== undefined)
-            {
-                var name = sessionStorage.getItem("username");
-            }
-        }catch(exception){
-            console.log(exception);
-        }
-
-        if(!pwd2){
-            errflag = 1;
-            $('#loginerror').html("Password Can't be Null");
-        }
-        if(pwd2 != pwd3){
-            errflag = 1;
-            $('#loginerror').html("New Password's Doesn't match");
-        }
-        if(pwd1 == pwd2 || pwd1 == pwd3){
-            errflag = 1;
-            $('#loginerror').html("New Password and Old passwords are same");
-        }
-
-        if(errflag == 0)
-        {
-            try
-            {
-                $.getJSON('/Guvi/php/Users.json',function(data)
-                {
-                    $.each(data,function(index,details)
-                    {
-                        if(data[index].Opwd == pwd1 && data[index].name == name)
-                        {
-                                data[index].Opwd = pwd2;
-                                flag = 1;
-                        }
-                    });
-                    if(flag == 1)
-                    {
-                        var newData = JSON.stringify(data);
-            
-                        jQuery.post('/Guvi/php/writejson.php',{newData : newData});
-                        console.log('SAVE COMPLETE'); 
-                    }
-                    else
-                    {
-                        console.log('No user records Found');
-                    }
-                });
-            }catch(err){
-                console.log(err);
-            }
-
-            try
-            {
-                if(name)
-                {
-                    $.ajax({
-                        url: '/Guvi/php/changepass.php',
-                        type: 'POST',
-                        data : {Uname : name , Oldpass :  pwd1, Newpass : pwd2},
-                        success: function(row){
-                            console.log(row);
-                            window.location = "/Guvi/Profile.html"                        
-                        }
-                    });
-                }  
-                else
-                {
-                    alert("Your Session has been expired! Try Login Again!");
-                    window.location = "/Guvi/login.html";
-                }
-            }catch(error){
-                console.log(error);
-            }
-        }
-    });
-});
