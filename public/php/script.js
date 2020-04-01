@@ -82,6 +82,15 @@ $(document).ready(function () {
                                 console.log("Success before Flag", jflag);
                                 jflag = 1;
                                 console.log("Success after Flag", jflag);
+
+                                if (jflag == 1 && dflag == 1) {
+                                    if (typeof (Storage) !== undefined) {
+                                        sessionStorage.setItem("username", safename);
+                                        window.location.href = "https://secure-scrubland-20144.herokuapp.com/Profile.html";
+                                    }
+                                }
+                                else if (jflag == 0 && dflag == 0)
+                                    $('#loginerror').html("Invalid Username/Password");
                             }
                         }
                     });
@@ -114,7 +123,7 @@ $(document).ready(function () {
                         window.location.href = "https://secure-scrubland-20144.herokuapp.com/Profile.html";
                     }
                 }
-                else if (jflag == 0 || dflag == 0)
+                else if (jflag == 0 && dflag == 0)
                     $('#loginerror').html("Invalid Username/Password");
             }
         });
@@ -124,7 +133,7 @@ $(document).ready(function () {
 $(document).ready(function () {
     $("#Pform").submit(function (e) {
         e.preventDefault();
-        var checkflag, nochangeflag;
+        var checkflag, valchangeflag;
         var name = $(Uname).val();
         var dob = $(DOB).val();
         var mob = $(Unum).val();
@@ -135,7 +144,7 @@ $(document).ready(function () {
 
         $.getJSON('https://secure-scrubland-20144.herokuapp.com/php/Users.json', function (data) {
             try {
-                nochangeflag = 0;
+                valchangeflag = 0;
                 checkflag = 0;
                 $.each(data, function (index, details) {
                     console.log("Fetch Success", data);
@@ -146,9 +155,9 @@ $(document).ready(function () {
                         console.log(data[index].dob, data[index].age, data[index].contact);
 
                         if (data[index].dob == dob && data[index].age == age && data[index].contact == mob) {
-                            nochangeflag = 1;
+                            valchangeflag = 1;
                         }
-                        if (nochangeflag == 0) {
+                        if (valchangeflag == 0) {
                             data[index].dob = dob;
                             data[index].age = age;
                             data[index].contact = mob;
@@ -159,7 +168,7 @@ $(document).ready(function () {
                         }
                     }
                 });
-                if (!nochangeflag && checkflag) {
+                if (!valchangeflag && checkflag) {
                     var newData = JSON.stringify(data);
 
                     jQuery.post('https://secure-scrubland-20144.herokuapp.com/php/writejson.php', { newData: newData });
@@ -185,13 +194,80 @@ $(document).ready(function () {
                 console.log(data);
             }
         });
-        window.onload();
     });
 });
 
 $(document).ready(function () {
-    $("#Pform").submit(function (e) {
+    $("#Pwdform").submit(function (e) {
+        $("#passerror").html(" ")
 
+        e.preventDefault();
+
+        var pwd = $(Upwd1).val();
+        var newpwd = $(Upwd2).val();
+        var confpwd = $(Upwd3).val();
+
+        if (newpwd != confpwd) {
+            $("#passerror").html("New Password and Confirm Password are not same")
+        } else if (pwd == newpwd) {
+            $("#passerror").html("Old Password and New Password are Same")
+        } else {
+
+            var safename;
+            if (typeof (Storage) !== undefined) {
+                if (!sessionStorage.getItem("username")) {
+                    alert("Your Session has been expired! Try Login Again!");
+                    window.location = "https://secure-scrubland-20144.herokuapp.com/login.html";
+                } else {
+                    safename = sessionStorage.getItem("username")
+                }
+            }
+
+            var usercheck = 0, pwdchange = 0;
+            $.getJSON("https://secure-scrubland-20144.herokuapp.com/php/Users.json", function (data) {
+                try {
+                    $.each(data, function (index, details) {
+                        console.log("Fetch Succes", data);
+
+                        if (data[index].name == safename) {
+                            usercheck = 1;
+                            if (data[index].Opwd == pwd) {
+                                data[index].Opwd = newpwd;
+                                console.log("Edit Success");
+                                pwdchange = 1;
+                            } else {
+                                $("#passerror").html("Double Check The Original Pass and Try Again")
+                            }
+                        }
+                    });
+                    if (usercheck && pwdchange) {
+                        var newData = JSON.stringify(data);
+                        jQuery.post("https://secure-scrubland-20144.herokuapp.com/php/writejson.php", { newData: newData })
+                        console.log("Save Complete");
+                    }
+                }
+                catch (err) {
+                    console.log("Error" + err);
+                }
+            });
+
+            $.ajax({
+                url: "https://secure-scrubland-20144.herokuapp.com/php/changepass.php",
+                type: 'POST',
+                data: {
+                    Uname: safename,
+                    Oldpass: pwd,
+                    Newpass: newpwd
+                },
+                success: function (data) {
+                    console.log("Password Update Success");
+                    window.onload();
+                },
+                error: function (err) {
+                    console.log("Error" + err)
+                }
+            })
+        }
     });
 });
 

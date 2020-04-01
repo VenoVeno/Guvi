@@ -20,7 +20,6 @@ $sql = "UPDATE Users SET dob = ? , age = ? , mobile = ? WHERE firstname = ?";
         $mobile = mysqli_real_escape_string($conn,$_POST['contact']);
         $name = mysqli_real_escape_string($conn,$_POST['Uname']);
 
-
         if(mysqli_stmt_execute($stmt))
             echo "<script>console.log('New record Updated successfully')</script>";
         else

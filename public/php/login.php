@@ -9,8 +9,8 @@ require "DBconn.php";
 // Checking connection
 if (!$conn)
     die("Connection failed: " . mysqli_connect_error());
-else
-    echo "prob here";
+else 
+    echo "Connection to db created in echo.php";
 
 //Using Prepared Statemnts
 $sql  = "SELECT firstname,mail,Opwd FROM Users WHERE firstname = ? OR mail = ?";
