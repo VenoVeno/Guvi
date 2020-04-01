@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="SVG/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Change Password</title>
+    <style media="screen">
+            #loginerror
+            {
+                color: #FF0000;
+            }
+    </style>
+</head>
+<body onload="validateSession()">
+    <nav class="navbar navbar-expand-lg navbar-light d-flex justify-content-end">
+
+            <a class="navbar-brand mr-auto p-2" href="Profile.html">
+                <img src="SVG/Home.svg" width="30" height="30" class="d-inline-block align-top rounded mx-auto d-block"><small> Home</small>
+            </a>
+            
+            <a class="navbar-brand" href="javascript:logoutUser()">
+                <img src="SVG/Logout.svg" width="30" height="30" class="d-inline-block align-top rounded mx-auto d-block"><small> &nbsp Logout </small>
+            </a>
+        
+    </nav>  
+
+    <section class="container-fluid">
+            <section class="row justify-content-center">
+                <section class="col-12 col-sm-6 col-md-3">
+                    <img src="SVG/logo.jpg" class="rounded mx-auto d-block"/>
+
+                <form method="post" id="pwdForm" class="form-container" autocomplete="off">
+
+                    <div class="form-group">
+                        <label for="Upwd1">Old Password</label>
+                        <input type="password" class="form-control" id="Upwd1" name="password1" placeholder="Enter Old Password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="Upwd2">New Password</label>
+                        <input type="password" class="form-control" id="Upwd2" name="password2" placeholder="Enter New password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="Upwd3">Confirm New Password</label>
+                        <input type="password" class="form-control" id="Upwd3" name="password3" placeholder="Re-enter New password" required>
+                    </div>
+
+                    <button class="btn btn-success btn-block" data-toggle="tooltip" title="Click to Change" data-placement="bottom">Change Password</button>
+                    
+                    <div id="loginerror" class="form-group text-center"></div>
+
+                    <div class="form-group">
+                        <small class="text-muted form-text text-center">
+                        Don't want to change?<a href="Profile.html">&nbsp Go Back</a>
+                        </small>
+                    </div>
+                </form>
+                </section>
+            </section>
+        </section>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="/php/script.js"></script>
+</body>
+</html>

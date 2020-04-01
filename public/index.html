@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="SVG/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.min.css" />
+    <title>Login</title>
+</head>
+
+<body onload="checkSession()">
+
+        <nav class="navbar navbar-expand-lg navbar-light d-flex justify-content-end">       
+    
+            <a class="navbar-brand" href="login.html">
+                <img src="SVG/Login.svg" width="30" height="30" class="d-inline-block align-top rounded mx-auto d-block"><small>  &nbsp   Login </small>
+            </a>
+    
+            <a class="navbar-brand" href="#">
+                <img src="SVG/Signup.svg" width="30" height="30" class="d-inline-block align-top rounded mx-auto d-block"><small> &nbsp  Sign Up </small>
+            </a>
+        
+        </nav>
+
+        <section class="container-fluid">
+            <section class="row justify-content-center">
+                <section class="col-12 col-sm-6 col-md-3">
+
+                    <form method="post" id="myForm" class="form-container" autocomplete="off">
+                        <div class="form-group">
+                                <label for="Uname">Name</label>
+                                <input type="text" class="form-control" id="Uname" name="name" placeholder="Enter name" required>
+                        </div>
+                        <div class="form-group">
+                                <label for="Uemail">Email</label>
+                                <input type="email" class="form-control" id="Uemail" name="email" placeholder="Enter email" required>
+                        </div>
+                        <div class="form-group">
+                                <label for="Opwd">Password</label>
+                                <input type="password" class="form-control" id="Opwd" name="password1" placeholder="Enter password" required>
+                        </div>
+                        <div class="form-group">
+                                <label for="DOB">DOB</label>
+                                <input type="text" class="form-control" id="DOB" name="dob" placeholder="Select Your DOB" onfocusout= required>
+                        </div>
+                        <div class="form-group">
+                                <input type="hidden" class="form-control" id="Uage" name="age" placeholder="Enter age" required>
+                        </div>
+                        <div class="form-group">
+                                <label for="Unum">Mobile</label>
+                                <input type="number" class="form-control" id="Unum" name="mobile" placeholder="Enter Mobile Number" required>
+                        </div>
+                        <button class="btn btn-success btn-block" data-toggle="tooltip" title="Login to Proceed" data-placement="bottom">Signin</button>
+                        
+                        <div id="loginerror" class="form-group"></div>
+
+                        <div class="form-group">
+                                <small class="text-muted form-text text-center">
+                                    Already have an account?<a href="login.html">&nbsp Login</a>
+                                </small>
+                        </div>
+                    </form>
+                </section>
+            </section>
+        </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="/php/script.js"></script>
+    <script>
+    $(function(){
+        $("#DOB").datepicker({
+            dateFormat: 'yy-mm-dd',
+            onSelect: function(value, ui) 
+            {
+            var today = new Date(),
+                dob = new Date(value),
+                age = new Date(today - dob).getFullYear() - 1970;
+            $('#Uage').val(age);
+            },
+            maxDate: '+0d',
+            yearRange: '1920:2010',
+            changeMonth: true,
+            changeYear: true
+        });
+    });
+    </script>
+</body>
+</html>
